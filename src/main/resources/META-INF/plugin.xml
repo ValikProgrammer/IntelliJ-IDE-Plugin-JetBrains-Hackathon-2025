@@ -4,7 +4,6 @@
     <name>Code Evaluation - Quantum Spaghetti</name>
     <vendor>Quantum Spaghetti</vendor>
 
-
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
     <depends>org.jetbrains.kotlin</depends>
@@ -14,12 +13,23 @@
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
         <postStartupActivity implementation="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.startup.MyProjectActivity" />
+        <service serviceImplementation="com.github.valikprogrammer.intellijpluginjetbrainshackathon2025.services.OpenAIService"/>
     </extensions>
+
     <actions>
         <action id="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.CollectCodeAction"
                 class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.CollectCodeAction"
                 text="Collect Code" description="Collects code from the window">
-        <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+
+        <action
+                id="OpenAITest.TestAction"
+                class="com.github.valikprogrammer.intellijpluginjetbrainshackathon2025.TestAction"
+                text="Run OpenAI API Test"
+                description="Sends a simple test request to the OpenAI API.">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
     </actions>
+
 </idea-plugin>
