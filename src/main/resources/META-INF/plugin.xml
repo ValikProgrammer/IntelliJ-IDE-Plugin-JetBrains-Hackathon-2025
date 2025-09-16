@@ -4,6 +4,7 @@
     <name>Code Evaluation - Quantum Spaghetti</name>
     <vendor>Quantum Spaghetti</vendor>
 
+
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
     <depends>org.jetbrains.kotlin</depends>
@@ -11,15 +12,14 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow
-                id="MyToolWindow"
-                anchor="right"
-                factoryClass="com.PluginCode.toolWindow.MyToolWindowFactory"
-                icon="/icons/code_evaluator_icon.svg"
-                canCloseContents="true"
-                isAlwaysOnTop="false"
-        />
+        <toolWindow factoryClass="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <postStartupActivity implementation="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.startup.MyProjectActivity" />
     </extensions>
-
-
+    <actions>
+        <action id="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.CollectCodeAction"
+                class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.CollectCodeAction"
+                text="Collect Code" description="Collects code from the window">
+        <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>
