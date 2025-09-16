@@ -15,10 +15,10 @@
                 id="MyToolWindow"
                 anchor="right"
                 factoryClass="com.PluginCode.toolWindow.MyToolWindowFactory"
-                icon="/icons/code_evaluator_icon.svg"
                 canCloseContents="true"
                 isAlwaysOnTop="false"
         />
+        <projectService serviceImplementation="com.PluginCode.services.MyProjectService"/>
     </extensions>
 
 
