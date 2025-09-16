@@ -12,4 +12,11 @@
         <toolWindow factoryClass="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
         <postStartupActivity implementation="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.startup.MyProjectActivity" />
     </extensions>
+    <actions>
+        <action id="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.CollectCodeAction"
+                class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.CollectCodeAction"
+                text="Collect Code" description="Collects code from the window">
+        <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>
