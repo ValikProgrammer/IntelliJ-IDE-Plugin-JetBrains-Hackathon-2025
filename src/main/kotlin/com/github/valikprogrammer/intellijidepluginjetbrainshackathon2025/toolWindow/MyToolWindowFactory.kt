@@ -1,45 +1,56 @@
 package com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.toolWindow
 
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
-import com.intellij.ui.components.JBLabel
-import com.intellij.ui.components.JBPanel
 import com.intellij.ui.content.ContentFactory
+import com.intellij.ui.components.JBLabel
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.MyBundle
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.services.MyProjectService
-import javax.swing.JButton
-
+import java.awt.BorderLayout
+import javax.swing.JPanel
 
 class MyToolWindowFactory : ToolWindowFactory {
 
-    init {
-        thisLogger().warn("Don't forget to remove all non-needed sample code files with their corresponding registration entries in `plugin.xml`.")
-    }
-
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        val myToolWindow = MyToolWindow(toolWindow)
-        val content = ContentFactory.getInstance().createContent(myToolWindow.getContent(), null, false)
+        val myWindow = MyToolWindow(toolWindow)
+        val contentPanel = myWindow.getContent()
+        val content = ContentFactory.getInstance()
+            .createContent(contentPanel, /*displayName*/ null, /*isLockable*/ false)
         toolWindow.contentManager.addContent(content)
     }
 
     override fun shouldBeAvailable(project: Project) = true
 
-    class MyToolWindow(toolWindow: ToolWindow) {
-
+    private class MyToolWindow(toolWindow: ToolWindow) {
         private val service = toolWindow.project.service<MyProjectService>()
 
-        fun getContent() = JBPanel<JBPanel<*>>().apply {
-            val label = JBLabel(MyBundle.message("randomLabel", "?"))
+        fun getContent(): JPanel {
+            // Создаём панель с BorderLayout
+            return JPanel(BorderLayout()).apply {
+                // Центр: метка с рандомным числом
+                val label = JBLabel(MyBundle.message("randomLabel", "?"))
+                add(label, BorderLayout.CENTER)
 
-            add(label)
-            add(JButton(MyBundle.message("shuffle")).apply {
-                addActionListener {
-                    label.text = MyBundle.message("randomLabel", service.getRandomNumber())
+                // Получаем AnAction из ActionManager
+                val action = ActionManager
+                    .getInstance()
+                    .getAction("MyPlugin.MyAction") as? AnAction
+
+                // Если экшн зарегистрирован, превращаем его в тулбар
+                if (action != null) {
+                    val group = DefaultActionGroup().apply { add(action) }
+                    val toolbar = ActionManager
+                        .getInstance()
+                        .createActionToolbar("MyToolWindowToolbar", group, /*horizontal*/ true)
+                    // Добавляем тулбар наверх панели
+                    add(toolbar.component, BorderLayout.NORTH)
                 }
-            })
+            }
         }
     }
 }

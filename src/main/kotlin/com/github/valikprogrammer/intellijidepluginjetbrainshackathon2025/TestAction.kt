@@ -11,6 +11,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.runBlocking
+import com.intellij.openapi.application.ApplicationManager
 
 class TestAction : AnAction() {
 
