@@ -1,15 +1,25 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>org.jetbrains.plugins.template</id>
-    <name>IntelliJ Platform Plugin Template</name>
-    <vendor>JetBrains</vendor>
+    <id>com.github.ValikProgrammer.IntelliJ-IDE-Plugin-JetBrains-Hackathon-2025</id>
+    <name>Code Evaluation - Quantum Spaghetti</name>
+    <vendor>Quantum Spaghetti</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="org.jetbrains.plugins.template.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-        <postStartupActivity implementation="org.jetbrains.plugins.template.startup.MyProjectActivity" />
+        <toolWindow
+                id="MyToolWindow"
+                anchor="right"
+                factoryClass="com.PluginCode.toolWindow.MyToolWindowFactory"
+                icon="/icons/code_evaluator_icon.svg"
+                canCloseContents="true"
+                isAlwaysOnTop="false"
+        />
     </extensions>
+
+
 </idea-plugin>
