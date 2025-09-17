@@ -24,7 +24,10 @@ class OpenAIService {
         engine { requestTimeout = 30_000 }
     }
 
-    suspend fun sendTestRequest(apiKey: String, apiUrl: String): String {
+    suspend fun sendTestRequest(apiKey: String, apiUrl: String, codeFromUser:String ): String {
+        println("inside sendTestRequest")
+        val prompt = "Evaltuate my code $codeFromUser"
+
         val testPrompt = "Evaluate my code: class Solution {\n" +
                 "public:\n" +
                 "    vector<int> sumZero(int n) {\n" +
@@ -45,7 +48,7 @@ class OpenAIService {
             val response: OpenAIResponse = client.post(apiUrl) {
                 header(HttpHeaders.Authorization, "Bearer $apiKey")
                 contentType(ContentType.Application.Json)
-                setBody(OpenAIRequest("gpt-3.5-turbo", listOf(Message("user", testPrompt))))
+                setBody(OpenAIRequest("gpt-3.5-turbo", listOf(Message("user", prompt))))
             }.body()
             response.choices.firstOrNull()?.message?.content ?: "No response from AI"
         } catch (e: Exception) {
