@@ -123,4 +123,95 @@ Required JSON format:
             "Error: ${e.message}"
         }
     }
+
+    fun sendCodeForImprovement(apiKey: String, apiUrl: String, code: String, improvementType: String): String {
+        return """{
+            "id": "chatcmpl-XYZ",
+            "object": "chat.completion",
+            "choices": [
+                        {
+                            "index": 0,
+                            "finish_reason": "stop",
+                            "message": {
+                                    "role": "assistant",
+                                    "content": "Improved code that we got from AI"
+                            }
+                        }
+            ],
+            "usage": {
+                    "prompt_tokens": 123,
+                    "completion_tokens": 456,
+                    "total_tokens": 579
+            }
+        }
+        """
+
+
+
+        val prompt = when (improvementType) {
+            "readability" -> """
+System:
+You are an expert software engineer specializing in code readability improvements.
+Your task is to improve the readability of the given code snippet while maintaining its functionality.
+Focus on:
+- Clear variable and function names
+- Proper code formatting and indentation
+- Adding meaningful comments where necessary
+- Breaking down complex expressions
+- Improving code structure and organization
+
+User:
+Please improve the readability of the following code. Return only the improved code without any explanations or markdown formatting.
+
+Code:
+$code
+"""
+            "effectiveness" -> """
+System:
+You are an expert software engineer specializing in code optimization and performance improvements.
+Your task is to improve the effectiveness and performance of the given code snippet while maintaining its functionality.
+Focus on:
+- Algorithm optimization
+- Memory usage improvements
+- Performance enhancements
+- Better data structures usage
+- Reducing time complexity where possible
+
+User:
+Please improve the effectiveness and performance of the following code. Return only the improved code without any explanations or markdown formatting.
+
+Code:
+$code
+"""
+            else -> throw IllegalArgumentException("Invalid improvement type: $improvementType")
+        }
+
+        val body = RequestBody(
+            model = "gpt-3.5-turbo",
+            messages = listOf(Message("user", prompt))
+        )
+        val jsonBody = Json.encodeToString(body)
+
+        return try {
+            val url = URL(apiUrl)
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.setRequestProperty("Authorization", "Bearer $apiKey")
+            conn.setRequestProperty("Content-Type", "application/json")
+            conn.doOutput = true
+
+            OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use { it.write(jsonBody) }
+
+            val code = conn.responseCode
+
+            if (code == 200) {
+                conn.inputStream.bufferedReader().readText()
+            } else {
+                val errMsg = conn.errorStream?.bufferedReader()?.readText()
+                "Error: Server returned HTTP response code: $code for URL: $apiUrl\n${errMsg ?: ""}"
+            }
+        } catch (e: Exception) {
+            "Error: ${e.message}"
+        }
+    }
 }
