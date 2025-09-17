@@ -1,6 +1,6 @@
-package com.github.valikprogrammer.intellijpluginjetbrainshackathon2025
+package com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025
 
-import com.github.valikprogrammer.intellijpluginjetbrainshackathon2025.services.OpenAIService
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.services.OpenAIService
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
@@ -11,6 +11,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.runBlocking
+import com.intellij.openapi.application.ApplicationManager
 
 class TestAction : AnAction() {
 
