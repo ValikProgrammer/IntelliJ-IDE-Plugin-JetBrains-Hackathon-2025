@@ -19,7 +19,7 @@ class CollectCodeAction : AnAction("Collect Code") {
     override fun actionPerformed(e: AnActionEvent) {
 
         val OPENAI_API_KEY=""
-        val OPENAI_URL=""
+        val OPENAI_URL="https://api.openai.com/v1/chat/completions"
 
         val project: Project? = e.project
         val editor: Editor? = e.getData(CommonDataKeys.EDITOR)
@@ -49,12 +49,19 @@ class CollectCodeAction : AnAction("Collect Code") {
                         openAIService.sendCodeForAnalysis(apiKey, apiUrl, fileText)
                     }
 
+                    // Result log with pop-up
                     ApplicationManager.getApplication().invokeLater {
                         Messages.showMessageDialog(project, result, "Analysis Result", Messages.getInformationIcon())
                     }
+
+                    // ToDo: result parcing from JSON
+                    //
+
                 }
             })
-        } else {
+        }
+
+        else {
             Messages.showMessageDialog(
                 project,
                 "No active editor found!",

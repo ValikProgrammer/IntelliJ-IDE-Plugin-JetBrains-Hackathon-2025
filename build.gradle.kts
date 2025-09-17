@@ -12,7 +12,6 @@ plugins {
 
     kotlin("plugin.serialization") version "1.9.23"
 }
-
 group = providers.gradleProperty("pluginGroup").get()
 version = providers.gradleProperty("pluginVersion").get()
 
@@ -47,6 +46,7 @@ dependencies {
 
     // Kotlinx serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 
 
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
@@ -172,12 +172,12 @@ intellijPlatformTesting {
     }
 
     // Solve slf4j problem
-    configurations {
-        implementation {
-            exclude(group = "org.slf4j", module = "slf4j-api")
-            exclude(group = "org.slf4j", module = "slf4j-simple")
-            exclude(group = "org.slf4j", module = "slf4j-log4j12")
-            exclude(group = "org.slf4j", module = "slf4j-jdk14")
-        }
-    }
+//    configurations {
+//        implementation {
+//            exclude(group = "org.slf4j", module = "slf4j-api")
+//            exclude(group = "org.slf4j", module = "slf4j-simple")
+//            exclude(group = "org.slf4j", module = "slf4j-log4j12")
+//            exclude(group = "org.slf4j", module = "slf4j-jdk14")
+//        }
+//    }
 }
