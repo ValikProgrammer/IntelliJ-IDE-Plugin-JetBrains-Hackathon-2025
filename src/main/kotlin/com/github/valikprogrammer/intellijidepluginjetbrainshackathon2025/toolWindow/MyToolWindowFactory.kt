@@ -8,8 +8,14 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.services.MyProjectService
-import java.awt.BorderLayout
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.MetricPanel
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.StatisticsPanel
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.model.LlmResponse
+import com.intellij.ui.components.JBScrollPane
+import javax.swing.BoxLayout
 import javax.swing.JPanel
+import java.awt.BorderLayout
+
 
 class MyToolWindowFactory : ToolWindowFactory {
 
@@ -24,28 +30,42 @@ class MyToolWindowFactory : ToolWindowFactory {
     override fun shouldBeAvailable(project: Project) = true
 
     private class MyToolWindow(toolWindow: ToolWindow) {
-        // Dan4life comments: service currently not used
         private val service = toolWindow.project.service<MyProjectService>()
 
         fun getContent(): JPanel {
-            // Создаём панель с BorderLayout
-            return JPanel(BorderLayout()).apply {
+            val panel = JPanel(BorderLayout())
 
-                // Получаем AnAction из ActionManager
-                val action = ActionManager
+            // Toolbar at top (stays fixed)
+            val action = ActionManager.getInstance().getAction("OpenAITest.TestAction")
+            if (action != null) {
+                val group = DefaultActionGroup().apply { add(action) }
+                val toolbar = ActionManager
                     .getInstance()
-                    .getAction("OpenAITest.TestAction")
-
-                // Если экшн зарегистрирован, превращаем его в тулбар
-                if (action != null) {
-                    val group = DefaultActionGroup().apply { add(action) }
-                    val toolbar = ActionManager
-                        .getInstance()
-                        .createActionToolbar("MyToolWindowToolbar", group, /*horizontal*/ true)
-                    // Добавляем тулбар наверх панели
-                    add(toolbar.component, BorderLayout.NORTH)
-                }
+                    .createActionToolbar("MyToolWindowToolbar", group, true)
+                panel.add(toolbar.component, BorderLayout.NORTH)
             }
+
+            // Dummy JSON response (replace later with backend data)
+            val dummyResponse = LlmResponse.createDummy()
+
+            // Create one big vertical container for metrics + statistics
+            val mainContent = JPanel().apply {
+                layout = BoxLayout(this, BoxLayout.Y_AXIS)
+
+                // Add all metrics
+                dummyResponse.metrics.forEach { (name, metric) ->
+                    add(MetricPanel(name, metric.score100, metric.canBeImproved))
+                }
+
+                // Add statistics at the bottom
+                add(StatisticsPanel(dummyResponse.language, dummyResponse.statistics))
+            }
+
+            // Wrap everything in JBScrollPane so it scrolls together
+            val scrollPane = JBScrollPane(mainContent)
+            panel.add(scrollPane, BorderLayout.CENTER)
+
+            return panel
         }
     }
 }
