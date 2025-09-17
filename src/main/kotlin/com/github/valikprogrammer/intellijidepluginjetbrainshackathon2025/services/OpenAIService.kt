@@ -24,25 +24,8 @@ class OpenAIService {
         engine { requestTimeout = 30_000 }
     }
 
-    suspend fun sendTestRequest(apiKey: String, apiUrl: String, codeFromUser:String ): String {
-        println("inside sendTestRequest")
-        val prompt = "Evaltuate my code $codeFromUser"
-
-        val testPrompt = "Evaluate my code: class Solution {\n" +
-                "public:\n" +
-                "    vector<int> sumZero(int n) {\n" +
-                "\n" +
-                "        vector<int> ans(n);\n" +
-                "\n" +
-                "        for (int i = 1; i < n; i += 2) {\n" +
-                "            ans[i] = i;\n" +
-                "            ans[i-1] = -i;\n" +
-                "        }\n" +
-                "\n" +
-                "        return ans;\n" +
-                "        \n" +
-                "    }\n" +
-                "};"
+    suspend fun sendCodeForAnalysis(apiKey: String, apiUrl: String, code: String): String {
+        val prompt = "Analyze this code: \n$code"
 
         return try {
             val response: OpenAIResponse = client.post(apiUrl) {

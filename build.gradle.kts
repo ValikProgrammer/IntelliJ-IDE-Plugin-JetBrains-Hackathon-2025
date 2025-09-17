@@ -170,4 +170,14 @@ intellijPlatformTesting {
             }
         }
     }
+
+    // Solve slf4j problem
+    configurations {
+        implementation {
+            exclude(group = "org.slf4j", module = "slf4j-api")
+            exclude(group = "org.slf4j", module = "slf4j-simple")
+            exclude(group = "org.slf4j", module = "slf4j-log4j12")
+            exclude(group = "org.slf4j", module = "slf4j-jdk14")
+        }
+    }
 }
