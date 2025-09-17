@@ -1,6 +1,6 @@
-package com.github.valikprogrammer.intellijpluginjetbrainshackathon2025
+package com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025
 
-import com.github.valikprogrammer.intellijpluginjetbrainshackathon2025.services.OpenAIService
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.services.OpenAIService
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service

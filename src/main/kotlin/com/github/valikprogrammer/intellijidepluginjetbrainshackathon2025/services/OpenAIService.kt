@@ -1,4 +1,4 @@
-package com.github.valikprogrammer.intellijpluginjetbrainshackathon2025.services
+package com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.services
 
 import com.intellij.openapi.components.Service
 import io.ktor.client.*
