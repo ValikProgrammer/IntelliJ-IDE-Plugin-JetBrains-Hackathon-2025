@@ -1,54 +1,125 @@
 package com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.services
 
 import com.intellij.openapi.components.Service
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
 
 @Service
 class OpenAIService {
 
-    @Serializable data class OpenAIRequest(val model: String, val messages: List<Message>)
-    @Serializable data class Message(val role: String, val content: String)
-    @Serializable data class OpenAIResponse(val choices: List<Choice>)
-    @Serializable data class Choice(val message: Message)
+    @Serializable
+    data class Message(val role: String, val content: String)
 
-    private val client = HttpClient(CIO) {
-        install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
-        engine { requestTimeout = 30_000 }
+    @Serializable
+    data class RequestBody(val model: String, val messages: List<Message>)
+
+    fun sendCodeForAnalysis(apiKey: String, apiUrl: String, code: String): String {
+        val prompt = """
+System:
+You are an expert software engineer specializing in static code analysis.
+Your task is to provide a precise, unbiased evaluation of the given code snippet. 
+Your response must strictly follow the required JSON format and contain no extra text, explanations, or markdown. 
+If a metric cannot be computed, provide the best estimate based on static analysis.
+
+Important:
+- Each metric must have a score from 0 to 100.
+- Each "can_be_improved" field must contain a list of concrete improvement ideas. 
+  The number of ideas is flexible (min 0, max 3), depending on actual opportunities for improvement.
+
+User:
+Analyze the code below and respond with a single JSON object. 
+
+Code:
+$code
+
+Required JSON format:
+{
+  "language": "string",
+  "statistics": {
+    "lines_of_code": "integer",
+    "number_of_functions": "integer",
+    "average_function_length": "float (lines per function)",
+    "comment_density": "float (percentage of comment lines)"
+  },
+  "metrics": {
+    "readability": {
+      "score_100": "integer (0-100)",
+      "can_be_improved": ["idea1", "idea2", "..."]
+    },
+    "complexity": {
+      "score_100": "integer (0-100)",
+      "can_be_improved": ["idea1", "..."]
+    },
+    "maintainability": {
+      "score_100": "integer (0-100)",
+      "can_be_improved": []
+    },
+    "performance": {
+      "score_100": "integer (0-100)",
+      "can_be_improved": ["idea1", "idea2"]
+    },
+    "security": {
+      "score_100": "integer (0-100)",
+      "can_be_improved": []
+    },
+    "consistency": {
+      "score_100": "integer (0-100)",
+      "can_be_improved": ["idea1"]
+    },
+    "reusability": {
+      "score_100": "integer (0-100)",
+      "can_be_improved": []
+    },
+    "testability": {
+      "score_100": "integer (0-100)",
+      "can_be_improved": ["idea1"]
+    },
+    "duplication": {
+      "score_100": "integer (0-100)",
+      "can_be_improved": []
     }
+  },
+  "overall_score": {
+    "score_100": "integer (0-100)"
+  },
 
-    suspend fun sendTestRequest(apiKey: String, apiUrl: String): String {
-        val testPrompt = "Evaluate my code: class Solution {\n" +
-                "public:\n" +
-                "    vector<int> sumZero(int n) {\n" +
-                "\n" +
-                "        vector<int> ans(n);\n" +
-                "\n" +
-                "        for (int i = 1; i < n; i += 2) {\n" +
-                "            ans[i] = i;\n" +
-                "            ans[i-1] = -i;\n" +
-                "        }\n" +
-                "\n" +
-                "        return ans;\n" +
-                "        \n" +
-                "    }\n" +
-                "};"
+  "feedback": "string (a single concise sentence summarizing the code quality)"
+}
+"""
+        val body = RequestBody(
+            model = "gpt-3.5-turbo",
+            messages = listOf(Message("user", prompt))
+        )
+        val jsonBody = Json.encodeToString(body)
 
         return try {
-            val response: OpenAIResponse = client.post(apiUrl) {
-                header(HttpHeaders.Authorization, "Bearer $apiKey")
-                contentType(ContentType.Application.Json)
-                setBody(OpenAIRequest("gpt-3.5-turbo", listOf(Message("user", testPrompt))))
-            }.body()
-            response.choices.firstOrNull()?.message?.content ?: "No response from AI"
-        } catch (e: Exception) {
+            val url = URL(apiUrl)
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.setRequestProperty("Authorization", "Bearer $apiKey")
+            conn.setRequestProperty("Content-Type", "application/json")
+            conn.doOutput = true
+
+            OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use { it.write(jsonBody) }
+
+            val code = conn.responseCode
+
+            if (code == 200) {
+                conn.inputStream.bufferedReader().readText()
+            }
+
+            else {
+                val errMsg = conn.errorStream?.bufferedReader()?.readText()
+                "Error: Server returned HTTP response code: $code for URL: $apiUrl\n${errMsg ?: ""}"
+            }
+
+        }
+
+        catch (e: Exception) {
             "Error: ${e.message}"
         }
     }
