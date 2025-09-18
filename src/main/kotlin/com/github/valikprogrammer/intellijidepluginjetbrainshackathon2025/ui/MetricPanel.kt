@@ -1,8 +1,24 @@
 package com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui
 
+import com.intellij.ide.DataManager
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.ui.JBColor
 import java.awt.*
 import javax.swing.*
+
+fun invokeAction(actionId: String, source: Component) {
+    val action = ActionManager.getInstance().getAction(actionId) ?: return
+    val dataContext = DataManager.getInstance().getDataContext(source)
+    val project = CommonDataKeys.PROJECT.getData(dataContext)
+    val editorComponent = project?.let { FileEditorManager.getInstance(it).selectedTextEditor?.contentComponent }
+    val sourceForContext = editorComponent ?: source
+
+    ActionUtil.invokeAction(action, sourceForContext, ActionPlaces.UNKNOWN, null, null)
+}
 
 class MetricPanel(
     metricName: String,
@@ -12,20 +28,19 @@ class MetricPanel(
 
     init {
         layout = BorderLayout()
-        background = JBColor(0xE0E0E0, 0x2B2B2B) // Light gray / Dark gray
+        background = JBColor(0xE0E0E0, 0x2B2B2B)
 
-        // ✅ Add margin outside + border + padding inside
         border = BorderFactory.createCompoundBorder(
-            BorderFactory.createEmptyBorder(8, 8, 8, 8), // outer margin
+            BorderFactory.createEmptyBorder(8, 8, 8, 8),
             BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(JBColor.WHITE, 2, true), // white border
-                BorderFactory.createEmptyBorder(10, 12, 10, 12) // inner padding
+                BorderFactory.createLineBorder(JBColor.WHITE, 2, true),
+                BorderFactory.createEmptyBorder(10, 12, 10, 12)
             )
         )
 
         val titleLabel = JLabel(metricName.uppercase()).apply {
             font = font.deriveFont(Font.BOLD, 14f)
-            foreground = JBColor(0x000000, 0xFFFFFF) // Black / White
+            foreground = JBColor(0x000000, 0xFFFFFF)
         }
 
         val scoreLabel = JLabel("Score: $score100/100").apply {
@@ -56,7 +71,22 @@ class MetricPanel(
             background = JBColor.GREEN
             foreground = JBColor.BLACK
             font = font.deriveFont(Font.BOLD, 12f)
-            addActionListener { println("Improve clicked for $metricName") }
+            addActionListener {
+                val actionIdClass = when (metricName) {
+                    "Readability"      -> "OpenAITest.ImproveReadabilityAction"
+                    "Effectiveness"    -> "OpenAITest.ImproveEffectivenessAction"
+                    "Maintainability"  -> "OpenAITest.ImproveMaintainabilityAction"
+                    "Performance"      -> "OpenAITest.ImprovePerformanceAction"
+                    "Complexity"       -> "OpenAITest.ImproveComplexityAction"
+                    "Security"         -> "OpenAITest.ImproveSecurityAction"
+                    "Consistency"      -> "OpenAITest.ImproveConsistencyAction"
+                    "Reusability"      -> "OpenAITest.ImproveReusabilityAction"
+                    "Testability"      -> "OpenAITest.ImproveTestabilityAction"
+                    "Duplication"      -> "OpenAITest.ImproveDuplicationAction"
+                    else               -> return@addActionListener
+                }
+                invokeAction(actionIdClass, this)
+            }
         }
 
         val topPanel = JPanel(BorderLayout()).apply {

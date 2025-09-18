@@ -39,8 +39,7 @@ class CollectCodeAction : AnAction("REFRESH") {
         val document = editor.document
         val fileText = document.text
 
-        // TODO: move secrets to secure storage; do not hardcode keys
-        val OPENAI_API_KEY = ""
+        val OPENAI_API_KEY = "api key not missing )))"
         val OPENAI_URL = "https://api.openai.com/v1/chat/completions"
 
         if (OPENAI_API_KEY.isBlank()) {

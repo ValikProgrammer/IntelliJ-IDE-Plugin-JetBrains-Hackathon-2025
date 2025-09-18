@@ -26,29 +26,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 
 
-/**
- * Helper to invoke a registered IDE action by its ID with a proper DataContext from a source component.
- */
 
-fun invokeAction(actionId: String, source: Component) {
-    val action = ActionManager.getInstance().getAction(actionId) ?: return
-
-    // Try to resolve project and active editor
-    val dataContext = DataManager.getInstance().getDataContext(source)
-    val project = CommonDataKeys.PROJECT.getData(dataContext)
-    val editorComponent = project
-        ?.let { FileEditorManager.getInstance(it).selectedTextEditor?.contentComponent }
-
-    val sourceForContext = editorComponent ?: source
-
-    ActionUtil.invokeAction(
-        action,
-        sourceForContext,       // prefer editor component for proper EDITOR in DataContext
-        ActionPlaces.UNKNOWN,
-        null,
-        null
-    )
-}
 
 
 

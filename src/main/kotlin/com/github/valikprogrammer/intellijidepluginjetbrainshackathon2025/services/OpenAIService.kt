@@ -124,7 +124,9 @@ Required JSON format:
         }
     }
 
-    fun sendCodeForImprovement(apiKey: String, apiUrl: String, code: String, improvementType: String): String {
+    fun sendPrompt(apiKey: String, apiUrl: String, prompt: String,improvementType: String): String {
+        // TODO
+        println("\n\n===>Sending prompt $improvementType")
         return """{
             "id": "chatcmpl-XYZ",
             "object": "chat.completion",
@@ -134,7 +136,7 @@ Required JSON format:
                             "finish_reason": "stop",
                             "message": {
                                     "role": "assistant",
-                                    "content": "Improved code that we got from AI"
+                                    "content": "Improved code that we got from AI for $improvementType\n\n"
                             }
                         }
             ],
@@ -145,46 +147,6 @@ Required JSON format:
             }
         }
         """
-
-
-
-        val prompt = when (improvementType) {
-            "readability" -> """
-System:
-You are an expert software engineer specializing in code readability improvements.
-Your task is to improve the readability of the given code snippet while maintaining its functionality.
-Focus on:
-- Clear variable and function names
-- Proper code formatting and indentation
-- Adding meaningful comments where necessary
-- Breaking down complex expressions
-- Improving code structure and organization
-
-User:
-Please improve the readability of the following code. Return only the improved code without any explanations or markdown formatting.
-
-Code:
-$code
-"""
-            "effectiveness" -> """
-System:
-You are an expert software engineer specializing in code optimization and performance improvements.
-Your task is to improve the effectiveness and performance of the given code snippet while maintaining its functionality.
-Focus on:
-- Algorithm optimization
-- Memory usage improvements
-- Performance enhancements
-- Better data structures usage
-- Reducing time complexity where possible
-
-User:
-Please improve the effectiveness and performance of the following code. Return only the improved code without any explanations or markdown formatting.
-
-Code:
-$code
-"""
-            else -> throw IllegalArgumentException("Invalid improvement type: $improvementType")
-        }
 
         val body = RequestBody(
             model = "gpt-3.5-turbo",
@@ -203,10 +165,8 @@ $code
             OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use { it.write(jsonBody) }
 
             val code = conn.responseCode
-
-            if (code == 200) {
-                conn.inputStream.bufferedReader().readText()
-            } else {
+            if (code == 200) conn.inputStream.bufferedReader().readText()
+            else {
                 val errMsg = conn.errorStream?.bufferedReader()?.readText()
                 "Error: Server returned HTTP response code: $code for URL: $apiUrl\n${errMsg ?: ""}"
             }

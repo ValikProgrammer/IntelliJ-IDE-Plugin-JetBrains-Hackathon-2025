@@ -28,5 +28,44 @@
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
 
+        <action id="OpenAITest.ImproveReadabilityAction"
+                class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.codeImprovers.ImproveByTypeAction"
+                text="Improve Readability" description="Improves code readability using AI"/>
+
+        <action id="OpenAITest.ImproveEffectivenessAction"
+                class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.codeImprovers.ImproveByTypeAction"
+                text="Improve Effectiveness" description="Improves code effectiveness using AI"/>
+
+        <action id="OpenAITest.ImproveMaintainabilityAction"
+                class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.codeImprovers.ImproveByTypeAction"
+                text="Improve Maintainability" description="Improves code maintainability using AI"/>
+
+        <action id="OpenAITest.ImprovePerformanceAction"
+                class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.codeImprovers.ImproveByTypeAction"
+                text="Improve Performance" description="Improves code performance using AI"/>
+
+        <action id="OpenAITest.ImproveComplexityAction"
+                class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.codeImprovers.ImproveByTypeAction"
+                text="Improve Complexity" description="Reduces code complexity using AI"/>
+
+        <action id="OpenAITest.ImproveSecurityAction"
+                class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.codeImprovers.ImproveByTypeAction"
+                text="Improve Security" description="Improves code security using AI"/>
+
+        <action id="OpenAITest.ImproveConsistencyAction"
+                class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.codeImprovers.ImproveByTypeAction"
+                text="Improve Consistency" description="Improves code consistency using AI"/>
+
+        <action id="OpenAITest.ImproveReusabilityAction"
+                class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.codeImprovers.ImproveByTypeAction"
+                text="Improve Reusability" description="Improves code reusability using AI"/>
+
+        <action id="OpenAITest.ImproveTestabilityAction"
+                class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.codeImprovers.ImproveByTypeAction"
+                text="Improve Testability" description="Improves code testability using AI"/>
+
+        <action id="OpenAITest.ImproveDuplicationAction"
+                class="com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.codeImprovers.ImproveByTypeAction"
+                text="Reduce Duplication" description="Reduces code duplication using AI"/>
     </actions>
 </idea-plugin>
