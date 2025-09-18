@@ -6,6 +6,8 @@ We built a JetBrains IDE plugin that sits right in your editor and measures your
 
 But here’s the best part: every metric comes with its own “Improve” button that taps into our AI engine and applies a smart refactoring in one click. No more wrestling with style guides or hunting down tricky optimizations by hand—just hit the button, watch the plugin transform your code, and keep moving forward. It’s like having a coding coach in your IDE, helping you write cleaner, more robust software faster than ever before.
 
+### Devs 
+Quantum Spaghetti team
 
 
 ## Installation
