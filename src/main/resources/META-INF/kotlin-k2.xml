@@ -1,0 +1,7 @@
+<idea-plugin>
+    <modules>
+        <module name="intellij.kotlin.k2" />
+    </modules>
+</idea-plugin>
+
+

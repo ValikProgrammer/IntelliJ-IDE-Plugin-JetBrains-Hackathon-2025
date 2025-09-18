@@ -23,7 +23,6 @@ class CodeImprovement {
 		val OPENAI_API_KEY = "something:)"
         val OPENAI_URL = "https://api.openai.com/v1/chat/completions"
 
-
 		if (OPENAI_API_KEY.isBlank()) {
 			Messages.showErrorDialog(project, "Missing API key.", "Configuration Error")
 			return

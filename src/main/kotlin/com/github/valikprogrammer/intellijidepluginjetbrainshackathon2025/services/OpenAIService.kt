@@ -127,26 +127,28 @@ Required JSON format:
     fun sendPrompt(apiKey: String, apiUrl: String, prompt: String,improvementType: String): String {
         // TODO
         println("\n\n===>Sending prompt $improvementType")
-        /*return """{
-            "id": "chatcmpl-XYZ",
-            "object": "chat.completion",
-            "choices": [
-                        {
-                            "index": 0,
-                            "finish_reason": "stop",
-                            "message": {
-                                    "role": "assistant",
-                                    "content": "Improved code that we got from AI for $improvementType\n\n"
-                            }
-                        }
-            ],
-            "usage": {
-                    "prompt_tokens": 123,
-                    "completion_tokens": 456,
-                    "total_tokens": 579
-            }
-        }
-        """*/
+
+//        return """{
+//            "id": "chatcmpl-XYZ",
+//            "object": "chat.completion",
+//            "choices": [
+//                        {
+//                            "index": 0,
+//                            "finish_reason": "stop",
+//                            "message": {
+//                                    "role": "assistant",
+//                                    "content": "Improved code that we got from AI for $improvementType\n\n"
+//                            }
+//                        }
+//            ],
+//            "usage": {
+//                    "prompt_tokens": 123,
+//                    "completion_tokens": 456,
+//                    "total_tokens": 579
+//            }
+//        }
+//        """
+
 
         val body = RequestBody(
             model = "gpt-3.5-turbo",
