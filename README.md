@@ -11,7 +11,8 @@ But here’s the best part: every metric comes with its own “Improve” button
 ## Installation
 
 - Download **Working Version** Release. This would be .zip file.
-  then go to IntelliJ <kbd>Click on Settings button -> Plugins -> click settings button right to Installed section -> Install Plugin from Disk -> proceed with the installation </kbd>. Then go to <kbd>Settings -> Search for K2 -> disable K2 (Languages and Frameworks -> Kotlin section) </kbd>
+
+  then go to IntelliJ <b>Click on Settings button -> Plugins -> click settings button right to Installed section -> Install Plugin from Disk -> proceed with the installation. </b> Then go to <b>Settings -> Search for K2 -> disable K2 (Languages and Frameworks -> Kotlin section).</b>
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].
 
