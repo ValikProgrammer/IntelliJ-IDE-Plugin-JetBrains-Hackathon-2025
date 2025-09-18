@@ -1,19 +1,8 @@
 package com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.model
 
-
-import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.services.OpenAIService
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.fileEditor.FileEditorManager
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.Messages
-import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
-import kotlinx.coroutines.runBlocking
-import com.intellij.openapi.application.ApplicationManager
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 data class LlmResponse(
     val language: String,
@@ -24,50 +13,66 @@ data class LlmResponse(
 ) {
     companion object {
         fun createDummy(): LlmResponse {
-
-            val OPENAI_API_KEY = "something:)"
-            val OPENAI_URL = "https://api.openai.com/v1/chat/completions"
-
-            /*if (OPENAI_API_KEY.isBlank()) {
-                Messages.showErrorDialog(project, "Missing API key.", "Configuration Error")
-                return
-            }*/
-
-            //ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Analyzing Code...", true) {
-            //    override fun run(indicator: ProgressIndicator) {
-            //        indicator.isIndeterminate = true
-
-                    val openAIService = project.service<OpenAIService>()
-                    val result = runBlocking {
-                        openAIService.sendCodeForAnalysis(OPENAI_API_KEY, OPENAI_URL, fileText)
-                    }
-
-                    println(result)
-                    return result
-            //    }
-
-            /*return LlmResponse(
+            return LlmResponse(
                 language = "Kotlin",
                 statistics = Statistics(
-                    linesOfCode = 120,
-                    numberOfFunctions = 8,
-                    averageFunctionLength = 15.0,
-                    commentDensity = 12.5
+                    linesOfCode = 0,
+                    numberOfFunctions = 0,
+                    averageFunctionLength = 0.0,
+                    commentDensity = 0.0
                 ),
                 metrics = mapOf(
-                    "Readability" to Metric(72, listOf("Use clearer variable names", "Split long functions")),
-                    "Complexity" to Metric(65, listOf("Reduce nested loops", "Extract helper methods", "Lorem ipsum dolor sit amet blah blah blah blah blah blah")),
-                    "Maintainability" to Metric(80, emptyList()),
-                    "Performance" to Metric(58, listOf("Optimize algorithm for sorting", "Use caching")),
-                    "Security" to Metric(90, emptyList()),
-                    "Consistency" to Metric(70, listOf("Follow consistent naming conventions")),
-                    "Reusability" to Metric(77, emptyList()),
-                    "Testability" to Metric(68, listOf("Add more unit tests")),
-                    "Duplication" to Metric(85, emptyList())
+                    "Readability" to Metric(0, emptyList()),
+                    "Complexity" to Metric(0, emptyList()),
+                    "Maintainability" to Metric(0, emptyList()),
+                    "Performance" to Metric(0, emptyList()),
+                    "Security" to Metric(0, emptyList()),
+                    "Consistency" to Metric(0, emptyList()),
+                    "Reusability" to Metric(0, emptyList()),
+                    "Testability" to Metric(0, emptyList()),
+                    "Duplication" to Metric(0, emptyList())
                 ),
-                overallScore = OverallScore(74),
-                feedback = "The codebase is generally good, but readability and performance can be improved."
-            )*/
+                overallScore = OverallScore(0),
+                feedback = ""
+            )
+        }
+
+        fun fromStrictJson(strictJson: String): LlmResponse {
+            val obj = kotlinx.serialization.json.Json.parseToJsonElement(strictJson).jsonObject
+            val statsObj = obj["statistics"]!!.jsonObject
+            val metricsObj = obj["metrics"]!!.jsonObject
+
+            fun metric(name: String): Metric {
+                val m = metricsObj[name.lowercase()]!!.jsonObject
+                val score = m["score_100"]!!.jsonPrimitive.content.toInt()
+                val can = m["can_be_improved"]!!.jsonArray.map { it.jsonPrimitive.content }
+                return Metric(score, can)
+            }
+
+            val metrics = linkedMapOf(
+                "Readability" to metric("readability"),
+                "Complexity" to metric("complexity"),
+                "Maintainability" to metric("maintainability"),
+                "Performance" to metric("performance"),
+                "Security" to metric("security"),
+                "Consistency" to metric("consistency"),
+                "Reusability" to metric("reusability"),
+                "Testability" to metric("testability"),
+                "Duplication" to metric("duplication")
+            )
+
+            return LlmResponse(
+                language = obj["language"]!!.jsonPrimitive.content,
+                statistics = Statistics(
+                    linesOfCode = statsObj["lines_of_code"]!!.jsonPrimitive.content.toInt(),
+                    numberOfFunctions = statsObj["number_of_functions"]!!.jsonPrimitive.content.toInt(),
+                    averageFunctionLength = statsObj["average_function_length"]!!.jsonPrimitive.content.toDouble(),
+                    commentDensity = statsObj["comment_density"]!!.jsonPrimitive.content.toDouble()
+                ),
+                metrics = metrics,
+                overallScore = OverallScore(obj["overall_score"]!!.jsonObject["score_100"]!!.jsonPrimitive.content.toInt()),
+                feedback = obj["feedback"]!!.jsonPrimitive.content
+            )
         }
     }
 }

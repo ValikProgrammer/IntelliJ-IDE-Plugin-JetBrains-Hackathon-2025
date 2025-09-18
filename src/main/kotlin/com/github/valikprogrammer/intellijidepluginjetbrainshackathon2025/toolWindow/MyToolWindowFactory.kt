@@ -14,6 +14,7 @@ import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.Sta
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.invokeAction
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.model.LlmResponse
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.CollectCodeAction
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.services.EvaluationUiService
 
 import com.intellij.ui.components.JBScrollPane
 import javax.swing.BoxLayout
@@ -36,9 +37,9 @@ import kotlin.text.startsWith
 
 class MyToolWindowFactory : ToolWindowFactory {
 
-    override fun createToolWindowContent(project: Project, toolWindow: ToolWindow, result: String) {
+    override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val myWindow = MyToolWindow(toolWindow)
-        val contentPanel = myWindow.getContent(result)
+        val contentPanel = myWindow.getContent()
         val content = ContentFactory.getInstance()
             .createContent(contentPanel, /*displayName*/ null, /*isLockable*/ false)
         toolWindow.contentManager.addContent(content)
@@ -47,9 +48,10 @@ class MyToolWindowFactory : ToolWindowFactory {
     override fun shouldBeAvailable(project: Project) = true
 
     private class MyToolWindow(toolWindow: ToolWindow) {
+        private val toolWindowRef: ToolWindow = toolWindow
         private val service = toolWindow.project.service<MyProjectService>()
 
-        fun getContent(result: String): JPanel {
+        fun getContent(): JPanel {
 
             val panel = JPanel(BorderLayout())
 
@@ -78,22 +80,13 @@ class MyToolWindowFactory : ToolWindowFactory {
             panel.add(buttonPanel, BorderLayout.NORTH)
 
 
-            val action = ActionManager.getInstance().getAction("OpenAITest.TestAction")
+//            val action = ActionManager.getInstance().getAction("OpenAITest.TestAction")
 
             // Dummy JSON response (replace later with backend data)
 
             //val dummyResponse = actionPerformed(action) //
-            val json = Json.parseToJsonElement(result).jsonObject
-            val content = json["choices"]?.jsonArray
-                ?.firstOrNull()?.jsonObject
-                ?.get("message")?.jsonObject
-                ?.get("content")?.jsonPrimitive?.content
-
-            if (!content.isNullOrBlank() && !content.startsWith("Error:")) {
-                println(error)
-            }
-
-            val dummyResponse = LlmResponse.createDummy()
+            val evaluation = toolWindowRef.project.service<EvaluationUiService>().latestEvaluation
+            val dummyResponse = evaluation ?: LlmResponse.createDummy()
 
             // Create one big vertical container for metrics + statistics
             val mainContent = JPanel().apply {

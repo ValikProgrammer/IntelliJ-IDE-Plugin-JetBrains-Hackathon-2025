@@ -14,6 +14,8 @@ import com.intellij.openapi.progress.Task
 import kotlinx.coroutines.runBlocking
 import com.intellij.openapi.application.ApplicationManager
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.toolWindow.MyToolWindowFactory
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.services.EvaluationUiService
+import com.intellij.openapi.wm.ToolWindowManager
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -62,8 +64,12 @@ class CollectCodeAction : AnAction("REFRESH") {
                     openAIService.sendCodeForAnalysis(OPENAI_API_KEY, OPENAI_URL, fileText)
                 }
 
-                val myToolWindow = MyToolWindowFactory()
-                myToolWindow.createToolWindowContent(project, result)
+                val uiService = project.service<EvaluationUiService>()
+                uiService.updateFromChatCompletionJson(result)
+
+                ApplicationManager.getApplication().invokeLater {
+                    uiService.refreshToolWindow()
+                }
 
                 /*ApplicationManager.getApplication().invokeLater {
                     Messages.showMessageDialog(project, result, "Analysis Result", Messages.getInformationIcon())
