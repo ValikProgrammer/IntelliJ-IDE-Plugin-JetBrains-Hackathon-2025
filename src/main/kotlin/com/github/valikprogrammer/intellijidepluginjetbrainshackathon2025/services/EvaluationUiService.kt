@@ -27,6 +27,10 @@ class EvaluationUiService(private val project: Project) {
 
         if (!content.isNullOrBlank() && !content.startsWith("Error:")) {
             latestEvaluation = runCatching { LlmResponse.fromStrictJson(content) }.getOrNull()
+
+
+//            latestEvaluation = LlmResponse.createDummy()
+
         }
     }
 

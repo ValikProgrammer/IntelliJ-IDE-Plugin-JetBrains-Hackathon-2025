@@ -1,7 +1,5 @@
 package com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.toolWindow
 
-import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
@@ -13,26 +11,15 @@ import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.Met
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.StatisticsPanel
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.invokeAction
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.model.LlmResponse
-import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.CollectCodeAction
-import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.services.EvaluationUiService
 
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.services.EvaluationUiService
 import com.intellij.ui.components.JBScrollPane
 import javax.swing.BoxLayout
 import javax.swing.JPanel
 import java.awt.BorderLayout
 import java.awt.*
 import javax.swing.*
-import com.intellij.ide.DataManager
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.fileEditor.FileEditorManager
-import java.awt.Component
-import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.actionSystem.ActionManager
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import kotlin.text.startsWith
+
 
 
 class MyToolWindowFactory : ToolWindowFactory {
@@ -184,10 +171,7 @@ class MyToolWindowFactory : ToolWindowFactory {
 //             }
 //         }
 
-        /**
-         * Создаёт секцию с заголовком и кнопкой. В колбек onClick передаётся сама кнопка
-         * как источник DataContext для корректного извлечения PROJECT/EDITOR.
-         */
+
 //         private fun createImprovementSection(
 //             labelText: String,
 //             buttonText: String,
