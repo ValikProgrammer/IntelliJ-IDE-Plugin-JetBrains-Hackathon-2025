@@ -36,9 +36,9 @@ class CodeImprovement {
 		 return
 		}
 
-		ApplicationManager.getApplication().invokeLater {
-			Messages.showMessageDialog(project, "Wait ... Magic is happening", "Improving Code", Messages.getInformationIcon())
-		}
+//		ApplicationManager.getApplication().invokeLater {
+//			Messages.showMessageDialog(project, "Wait ... Magic is happening", "Improving Code", Messages.getInformationIcon())
+//		}
 
         println("===> BUILD PROMPT ${improvementType}")
 		val prompt = CodeImprovers.buildPrompt(improvementType, fileText)
