@@ -1,6 +1,5 @@
 package com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.toolWindow
 
-import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.components.service
@@ -23,6 +22,8 @@ import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.fileEditor.FileEditorManager
 import java.awt.Component
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.ActionManager
 
 
 /**
