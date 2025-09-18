@@ -72,15 +72,29 @@ class MyToolWindowFactory : ToolWindowFactory {
 
             val panel = JPanel(BorderLayout())
 
-            // Toolbar at top (stays fixed)
-            val action = ActionManager.getInstance().getAction("OpenAITest.TestAction")
-            if (action != null) {
-                val group = DefaultActionGroup().apply { add(action) }
-                val toolbar = ActionManager
-                    .getInstance()
-                    .createActionToolbar("MyToolWindowToolbar", group, true)
-                panel.add(toolbar.component, BorderLayout.NORTH)
+            // === REFRESH button at top ===
+            val refreshButton = JButton("REFRESH").apply {
+                font = Font("Arial", Font.BOLD, 18)
+                preferredSize = Dimension(200, 50)
+                background = Color(0, 123, 255)
+                foreground = Color.WHITE
+                isFocusPainted = false
+                isOpaque = true
+                border = BorderFactory.createEmptyBorder(10, 20, 10, 20)
+
+                addActionListener {
+                    invokeAction("OpenAITest.TestAction", this)
+                }
             }
+
+            val buttonPanel = JPanel().apply {
+                layout = BoxLayout(this, BoxLayout.X_AXIS)
+                add(Box.createHorizontalGlue())
+                add(refreshButton)
+                add(Box.createHorizontalGlue())
+            }
+
+            panel.add(buttonPanel, BorderLayout.NORTH)
 
             // Dummy JSON response (replace later with backend data)
             val dummyResponse = LlmResponse.createDummy()
