@@ -20,8 +20,9 @@ import kotlinx.serialization.json.jsonPrimitive
 class CodeImprovement {
 
 	fun sendCodeToImpoveToLLM(project: Project, editor: Editor, improvementType: String) {
-		val OPENAI_API_KEY = "api key not missing )))"
-		val OPENAI_URL = "https://api.openai.com/v1/chat/completions"
+		val OPENAI_API_KEY = "something:)"
+        val OPENAI_URL = "https://api.openai.com/v1/chat/completions"
+
 
 		if (OPENAI_API_KEY.isBlank()) {
 			Messages.showErrorDialog(project, "Missing API key.", "Configuration Error")
@@ -35,9 +36,9 @@ class CodeImprovement {
 		 return
 		}
 
-		ApplicationManager.getApplication().invokeLater {
-			Messages.showMessageDialog(project, "Wait ... Magic is happening", "Improving Code", Messages.getInformationIcon())
-		}
+//		ApplicationManager.getApplication().invokeLater {
+//			Messages.showMessageDialog(project, "Wait ... Magic is happening", "Improving Code", Messages.getInformationIcon())
+//		}
 
         println("===> BUILD PROMPT ${improvementType}")
 		val prompt = CodeImprovers.buildPrompt(improvementType, fileText)

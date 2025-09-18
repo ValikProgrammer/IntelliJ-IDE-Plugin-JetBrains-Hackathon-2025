@@ -11,7 +11,11 @@ import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.servic
 
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.MetricPanel
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.StatisticsPanel
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.invokeAction
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.model.LlmResponse
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.CollectCodeAction
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.services.EvaluationUiService
+
 import com.intellij.ui.components.JBScrollPane
 import javax.swing.BoxLayout
 import javax.swing.JPanel
@@ -24,11 +28,11 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 import java.awt.Component
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
-
-
-
-
-
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlin.text.startsWith
 
 
 class MyToolWindowFactory : ToolWindowFactory {
@@ -44,6 +48,7 @@ class MyToolWindowFactory : ToolWindowFactory {
     override fun shouldBeAvailable(project: Project) = true
 
     private class MyToolWindow(toolWindow: ToolWindow) {
+        private val toolWindowRef: ToolWindow = toolWindow
         private val service = toolWindow.project.service<MyProjectService>()
 
         fun getContent(): JPanel {
@@ -74,8 +79,14 @@ class MyToolWindowFactory : ToolWindowFactory {
 
             panel.add(buttonPanel, BorderLayout.NORTH)
 
+
+//            val action = ActionManager.getInstance().getAction("OpenAITest.TestAction")
+
             // Dummy JSON response (replace later with backend data)
-            val dummyResponse = LlmResponse.createDummy()
+
+            //val dummyResponse = actionPerformed(action) //
+            val evaluation = toolWindowRef.project.service<EvaluationUiService>().latestEvaluation
+            val dummyResponse = evaluation ?: LlmResponse.createDummy()
 
             // Create one big vertical container for metrics + statistics
             val mainContent = JPanel().apply {
