@@ -127,7 +127,7 @@ Required JSON format:
     fun sendPrompt(apiKey: String, apiUrl: String, prompt: String,improvementType: String): String {
         // TODO
         println("\n\n===>Sending prompt $improvementType")
-        return """{
+        /*return """{
             "id": "chatcmpl-XYZ",
             "object": "chat.completion",
             "choices": [
@@ -146,7 +146,7 @@ Required JSON format:
                     "total_tokens": 579
             }
         }
-        """
+        """*/
 
         val body = RequestBody(
             model = "gpt-3.5-turbo",

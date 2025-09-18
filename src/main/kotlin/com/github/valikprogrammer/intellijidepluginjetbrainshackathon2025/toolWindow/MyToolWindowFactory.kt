@@ -11,7 +11,10 @@ import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.servic
 
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.MetricPanel
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.StatisticsPanel
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.invokeAction
 import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.ui.model.LlmResponse
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.CollectCodeAction
+
 import com.intellij.ui.components.JBScrollPane
 import javax.swing.BoxLayout
 import javax.swing.JPanel
@@ -24,18 +27,18 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 import java.awt.Component
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
-
-
-
-
-
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlin.text.startsWith
 
 
 class MyToolWindowFactory : ToolWindowFactory {
 
-    override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
+    override fun createToolWindowContent(project: Project, toolWindow: ToolWindow, result: String) {
         val myWindow = MyToolWindow(toolWindow)
-        val contentPanel = myWindow.getContent()
+        val contentPanel = myWindow.getContent(result)
         val content = ContentFactory.getInstance()
             .createContent(contentPanel, /*displayName*/ null, /*isLockable*/ false)
         toolWindow.contentManager.addContent(content)
@@ -46,7 +49,7 @@ class MyToolWindowFactory : ToolWindowFactory {
     private class MyToolWindow(toolWindow: ToolWindow) {
         private val service = toolWindow.project.service<MyProjectService>()
 
-        fun getContent(): JPanel {
+        fun getContent(result: String): JPanel {
 
             val panel = JPanel(BorderLayout())
 
@@ -74,7 +77,22 @@ class MyToolWindowFactory : ToolWindowFactory {
 
             panel.add(buttonPanel, BorderLayout.NORTH)
 
+
+            val action = ActionManager.getInstance().getAction("OpenAITest.TestAction")
+
             // Dummy JSON response (replace later with backend data)
+
+            //val dummyResponse = actionPerformed(action) //
+            val json = Json.parseToJsonElement(result).jsonObject
+            val content = json["choices"]?.jsonArray
+                ?.firstOrNull()?.jsonObject
+                ?.get("message")?.jsonObject
+                ?.get("content")?.jsonPrimitive?.content
+
+            if (!content.isNullOrBlank() && !content.startsWith("Error:")) {
+                println(error)
+            }
+
             val dummyResponse = LlmResponse.createDummy()
 
             // Create one big vertical container for metrics + statistics

@@ -13,6 +13,11 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import kotlinx.coroutines.runBlocking
 import com.intellij.openapi.application.ApplicationManager
+import com.github.valikprogrammer.intellijidepluginjetbrainshackathon2025.toolWindow.MyToolWindowFactory
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 class CollectCodeAction : AnAction("REFRESH") {
     override fun actionPerformed(e: AnActionEvent) {
@@ -39,8 +44,9 @@ class CollectCodeAction : AnAction("REFRESH") {
         val document = editor.document
         val fileText = document.text
 
-        val OPENAI_API_KEY = "api key not missing )))"
+        val OPENAI_API_KEY = "something:)"
         val OPENAI_URL = "https://api.openai.com/v1/chat/completions"
+
 
         if (OPENAI_API_KEY.isBlank()) {
             Messages.showErrorDialog(project, "Missing API key.", "Configuration Error")
@@ -56,9 +62,12 @@ class CollectCodeAction : AnAction("REFRESH") {
                     openAIService.sendCodeForAnalysis(OPENAI_API_KEY, OPENAI_URL, fileText)
                 }
 
-                ApplicationManager.getApplication().invokeLater {
+                val myToolWindow = MyToolWindowFactory()
+                myToolWindow.createToolWindowContent(project, result)
+
+                /*ApplicationManager.getApplication().invokeLater {
                     Messages.showMessageDialog(project, result, "Analysis Result", Messages.getInformationIcon())
-                }
+                }*/
             }
         })
     }
